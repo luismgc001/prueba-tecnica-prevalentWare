@@ -1,7 +1,7 @@
 import { getSession } from "@auth0/nextjs-auth0";
 import { PrismaClient } from "@prisma/client";
 import ReportsView from "@/components/ReportsView";
-import Chart from "@/components/Chart";
+import ChartView from "@/components/ChartView";
 import Link from "next/link";
 
 const prisma = new PrismaClient();
@@ -67,7 +67,7 @@ export default function Reports() {
         <div className="grid grid-cols-2 gap-6">
           <ReportsView />
           <div className="flex flex-col">
-            <Chart />
+            <ChartView />
           </div>
         </div>
       </main>

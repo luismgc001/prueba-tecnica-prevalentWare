@@ -58,8 +58,28 @@ const ReportsView = () => {
   }
 
   const movements = data?.movements || [];
+  console.log("MOVEMENTS", movements);
   const totalBalance = movements.reduce((acc, mov) => acc + mov.amount, 0);
-  console.log(totalBalance);
+  console.log("TOTALB", totalBalance);
+
+  function getBalanceHistory(movements) {
+    // Convertir la fecha de string a número y ordenar por fecha ascendente
+    const sortedMovements = [...movements].sort(
+      (a, b) => parseInt(a.date) - parseInt(b.date)
+    );
+
+    // Calcular el balance acumulado
+    let balanceHistory = [];
+    let currentBalance = 0;
+
+    for (let movement of sortedMovements) {
+      currentBalance += movement.amount;
+      balanceHistory.push(currentBalance);
+    }
+
+    return balanceHistory;
+  }
+  console.log("HISTORIAL DE BALANCE: ", getBalanceHistory(movements));
 
   const processData = (movements) => {
     const groupedData = movements.reduce((acc, mov) => {
@@ -97,7 +117,7 @@ const ReportsView = () => {
   };
 
   const chartData = processData(movements);
-  console.log(chartData);
+  console.log("CHARTDATA", chartData);
 
   const downloadCSV = () => {
     const headers = ["Fecha", "Concepto", "Monto", "Usuario"];
@@ -127,15 +147,6 @@ const ReportsView = () => {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Reportes Financieros</h1>
         <div className="flex gap-4 items-center">
-          <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-            <SelectTrigger className="w-32">
-              <SelectValue placeholder="Seleccionar período" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="monthly">Mensual</SelectItem>
-              <SelectItem value="yearly">Anual</SelectItem>
-            </SelectContent>
-          </Select>
           <Button onClick={downloadCSV} variant="secondary">
             Descargar CSV
           </Button>
