@@ -3,6 +3,7 @@ import { useQuery, gql } from "@apollo/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import ReportBarChart from "./ReportBarChart";
 import {
   BarChart,
   Bar,
@@ -20,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import ReportBarChart from "./ReportBarChart";
+import ChartView from "./ChartView";
 
 const GET_REPORTS = gql`
   query GetReports($userId: ID) {
@@ -91,25 +92,6 @@ const ReportsView = () => {
   const totalBalance = movements.reduce((acc, mov) => acc + mov.amount, 0);
   console.log("TOTALB", totalBalance);
 
-  function getBalanceHistory(movements) {
-    // Convertir la fecha de string a número y ordenar por fecha ascendente
-    const sortedMovements = [...movements].sort(
-      (a, b) => parseInt(a.date) - parseInt(b.date)
-    );
-
-    // Calcular el balance acumulado
-    let balanceHistory = [];
-    let currentBalance = 0;
-
-    for (let movement of sortedMovements) {
-      currentBalance += movement.amount;
-      balanceHistory.push(currentBalance);
-    }
-
-    return balanceHistory;
-  }
-  console.log("HISTORIAL DE BALANCE: ", getBalanceHistory(movements));
-
   const processData = (movements) => {
     const groupedData = movements.reduce((acc, mov) => {
       const date = new Date(Number(mov.date));
@@ -170,50 +152,92 @@ const ReportsView = () => {
     }.csv`;
     link.click();
   };
+  const getTotals = (movements) => {
+    const totals = movements.reduce(
+      (acc, mov) => {
+        if (mov.amount > 0) {
+          acc.income += mov.amount;
+        } else {
+          acc.expenses += Math.abs(mov.amount);
+        }
+        acc.balance = acc.income - acc.expenses;
+        return acc;
+      },
+      { income: 0, expenses: 0, balance: 0 }
+    );
+
+    return totals;
+  };
+  const totals = getTotals(movements);
+  function getBalanceHistory(movements) {
+    // Crear una copia del arreglo para no modificar el original
+    const sortedMovements = [...movements].sort(
+      (a, b) => parseInt(a.date) - parseInt(b.date)
+    );
+
+    // Calcular el balance acumulado
+    let balanceHistory = [];
+    let currentBalance = 0;
+
+    for (let movement of sortedMovements) {
+      currentBalance += movement.amount;
+
+      // Convertir la fecha en milisegundos a una fecha legible
+      const date = new Date(parseInt(movement.date))
+        .toISOString()
+        .split("T")[0];
+
+      // Guardar el balance junto con la fecha
+      balanceHistory.push({
+        dia: date,
+        balance: currentBalance,
+      });
+    }
+
+    return balanceHistory;
+  }
+
+  const userMovements = getBalanceHistory(movements);
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Reportes Financieros</h1>
-        <div className="flex gap-4 items-center">
-          <Select value={selectedUserId} onValueChange={setSelectedUserId}>
-            <SelectTrigger className="w-[200px]">
-              <SelectValue placeholder="Seleccionar usuario" />
-            </SelectTrigger>
-            <SelectContent>
-              {userData?.users.map((user) => (
-                <SelectItem key={user.id} value={user.id}>
-                  {user.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Button onClick={downloadCSV} variant="secondary">
-            Descargar CSV
-          </Button>
-        </div>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Balance General</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-3xl font-bold">
-            {new Intl.NumberFormat("es-MX", {
-              style: "currency",
-              currency: "MXN",
-            }).format(totalBalance)}
+    <div>
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-bold">Reportes Financieros</h1>
+          <div className="flex gap-4 items-center">
+            <Select value={selectedUserId} onValueChange={setSelectedUserId}>
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="Seleccionar usuario" />
+              </SelectTrigger>
+              <SelectContent>
+                {userData?.users.map((user) => (
+                  <SelectItem key={user.id} value={user.id}>
+                    {user.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button onClick={downloadCSV} variant="secondary">
+              Descargar CSV
+            </Button>
           </div>
-        </CardContent>
-      </Card>
-      <ReportBarChart
-        income={chartData[0]?.income || 0}
-        expense={chartData[0]?.expenses || 0}
-        balance={chartData[0]?.balance || 0}
-      />
+        </div>
 
-      {/* <Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Balance General</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold">
+              {new Intl.NumberFormat("es-MX", {
+                style: "currency",
+                currency: "MXN",
+              }).format(totalBalance)}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* <Card>
         <CardHeader>
           <CardTitle>Movimientos Financieros</CardTitle>
         </CardHeader>
@@ -251,6 +275,17 @@ const ReportsView = () => {
           </div>
         </CardContent>
       </Card> */}
+        <div className="grid grid-cols-2 gap-6">
+          <ReportBarChart
+            income={totals.income || 0}
+            expense={totals.expenses || 0}
+            balance={totals.balance || 0}
+          />
+          <div className="flex flex-col">
+            <ChartView data={userMovements} />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

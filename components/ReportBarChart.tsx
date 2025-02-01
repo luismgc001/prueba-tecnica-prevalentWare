@@ -62,7 +62,7 @@ export default function ReportBarChart({
       fill: "var(--color-balance)",
     },
   ];
-  console.log("REPORTCHART: ", chartData);
+  console.log("REPORTBARCHART: ", income, expense, balance);
   return (
     <Card>
       <CardHeader>
