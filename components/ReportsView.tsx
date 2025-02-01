@@ -1,15 +1,15 @@
-import React from 'react';
-import { useQuery, gql } from '@apollo/client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import React from "react";
+import { useQuery, gql } from "@apollo/client";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   BarChart,
   Bar,
@@ -19,7 +19,7 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-} from 'recharts';
+} from "recharts";
 
 const GET_REPORTS = gql`
   query GetReports {
@@ -37,12 +37,12 @@ const GET_REPORTS = gql`
 
 const ReportsView = () => {
   const { data, loading, error } = useQuery(GET_REPORTS);
-  const [selectedPeriod, setSelectedPeriod] = React.useState('monthly');
+  const [selectedPeriod, setSelectedPeriod] = React.useState("monthly");
 
   if (loading) {
     return (
-      <Card className='w-full h-96'>
-        <CardContent className='flex items-center justify-center h-full'>
+      <Card className="w-full h-96">
+        <CardContent className="flex items-center justify-center h-full">
           Loading...
         </CardContent>
       </Card>
@@ -51,7 +51,7 @@ const ReportsView = () => {
 
   if (error) {
     return (
-      <Alert variant='destructive'>
+      <Alert variant="destructive">
         <AlertDescription>Error: {error.message}</AlertDescription>
       </Alert>
     );
@@ -59,15 +59,16 @@ const ReportsView = () => {
 
   const movements = data?.movements || [];
   const totalBalance = movements.reduce((acc, mov) => acc + mov.amount, 0);
+  console.log(totalBalance);
 
   const processData = (movements) => {
     const groupedData = movements.reduce((acc, mov) => {
       const date = new Date(Number(mov.date));
       const key =
-        selectedPeriod === 'monthly'
+        selectedPeriod === "monthly"
           ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
               2,
-              '0'
+              "0"
             )}`
           : date.getFullYear().toString();
 
@@ -96,45 +97,46 @@ const ReportsView = () => {
   };
 
   const chartData = processData(movements);
+  console.log(chartData);
 
   const downloadCSV = () => {
-    const headers = ['Fecha', 'Concepto', 'Monto', 'Usuario'];
+    const headers = ["Fecha", "Concepto", "Monto", "Usuario"];
     const csvData = movements.map((m) => [
       new Date(Number(m.date)).toLocaleDateString(),
       m.concept,
       m.amount,
-      m.user?.name || 'N/A',
+      m.user?.name || "N/A",
     ]);
 
     const csvContent = [
-      headers.join(','),
-      ...csvData.map((row) => row.join(',')),
-    ].join('\n');
+      headers.join(","),
+      ...csvData.map((row) => row.join(",")),
+    ].join("\n");
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = `reporte_financiero_${
-      new Date().toISOString().split('T')[0]
+      new Date().toISOString().split("T")[0]
     }.csv`;
     link.click();
   };
 
   return (
-    <div className='p-6 space-y-6'>
-      <div className='flex justify-between items-center'>
-        <h1 className='text-2xl font-bold'>Reportes Financieros</h1>
-        <div className='flex gap-4 items-center'>
+    <div className="p-6 space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Reportes Financieros</h1>
+        <div className="flex gap-4 items-center">
           <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-            <SelectTrigger className='w-32'>
-              <SelectValue placeholder='Seleccionar período' />
+            <SelectTrigger className="w-32">
+              <SelectValue placeholder="Seleccionar período" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value='monthly'>Mensual</SelectItem>
-              <SelectItem value='yearly'>Anual</SelectItem>
+              <SelectItem value="monthly">Mensual</SelectItem>
+              <SelectItem value="yearly">Anual</SelectItem>
             </SelectContent>
           </Select>
-          <Button onClick={downloadCSV} variant='secondary'>
+          <Button onClick={downloadCSV} variant="secondary">
             Descargar CSV
           </Button>
         </div>
@@ -145,10 +147,10 @@ const ReportsView = () => {
           <CardTitle>Balance General</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className='text-3xl font-bold'>
-            {new Intl.NumberFormat('es-MX', {
-              style: 'currency',
-              currency: 'MXN',
+          <div className="text-3xl font-bold">
+            {new Intl.NumberFormat("es-MX", {
+              style: "currency",
+              currency: "MXN",
             }).format(totalBalance)}
           </div>
         </CardContent>
@@ -159,34 +161,34 @@ const ReportsView = () => {
           <CardTitle>Movimientos Financieros</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className='h-96'>
-            <ResponsiveContainer width='100%' height='100%'>
+          <div className="h-96">
+            <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={chartData}
                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
               >
-                <CartesianGrid strokeDasharray='3 3' />
+                <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
-                  dataKey='period'
+                  dataKey="period"
                   tickFormatter={(value) =>
-                    selectedPeriod === 'monthly'
-                      ? value.split('-')[1] + '/' + value.split('-')[0]
+                    selectedPeriod === "monthly"
+                      ? value.split("-")[1] + "/" + value.split("-")[0]
                       : value
                   }
                 />
                 <YAxis />
                 <Tooltip
                   formatter={(value) =>
-                    new Intl.NumberFormat('es-MX', {
-                      style: 'currency',
-                      currency: 'MXN',
+                    new Intl.NumberFormat("es-MX", {
+                      style: "currency",
+                      currency: "MXN",
                     }).format(value)
                   }
                 />
                 <Legend />
-                <Bar dataKey='income' fill='#4CAF50' name='Ingresos' />
-                <Bar dataKey='expenses' fill='#f44336' name='Egresos' />
-                <Bar dataKey='balance' fill='#2196F3' name='Balance' />
+                <Bar dataKey="income" fill="#4CAF50" name="Ingresos" />
+                <Bar dataKey="expenses" fill="#f44336" name="Egresos" />
+                <Bar dataKey="balance" fill="#2196F3" name="Balance" />
               </BarChart>
             </ResponsiveContainer>
           </div>
