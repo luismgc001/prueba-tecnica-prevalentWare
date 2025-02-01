@@ -26,6 +26,7 @@ export default function MovementsList() {
 
   const { data, loading, error } = useQuery(GET_MOVEMENTS, {
     variables: { userId: userData?.currentUser?.id },
+    pollInterval: 1000,
   });
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;

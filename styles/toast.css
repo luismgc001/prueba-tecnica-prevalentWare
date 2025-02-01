@@ -1,0 +1,9 @@
+.success {
+    background-color: #dcfce7 !important; /* Light green */
+    border: 1px solid #22c55e;
+  }
+  
+  .error {
+    background-color: #fee2e2 !important; /* Light red */
+    border: 1px solid #ef4444;
+  }
