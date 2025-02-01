@@ -63,9 +63,13 @@ export default function Reports() {
           Cerrar Sesión
         </Link>
       </aside>
-      <main className="w-3/4 overflow-y-auto">
-        <ReportsView />
-        <Chart />
+      <main className="w-3/4 overflow-y-auto p-6">
+        <div className="grid grid-cols-2 gap-6">
+          <ReportsView />
+          <div className="flex flex-col">
+            <Chart />
+          </div>
+        </div>
       </main>
     </div>
   );
