@@ -1,13 +1,6 @@
 import React from "react";
 import { useQuery, gql } from "@apollo/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
@@ -20,6 +13,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import ReportBarChart from "./ReportBarChart";
 
 const GET_REPORTS = gql`
   query GetReports {
@@ -152,6 +146,11 @@ const ReportsView = () => {
           </Button>
         </div>
       </div>
+      <ReportBarChart
+        income={chartData[0]?.income || 0}
+        expense={chartData[0]?.expenses || 0}
+        balance={chartData[0]?.balance || 0}
+      />
 
       <Card>
         <CardHeader>
@@ -173,7 +172,7 @@ const ReportsView = () => {
         </CardHeader>
         <CardContent>
           <div className="h-96">
-            <ResponsiveContainer width="100%" height="100%">
+            {/* <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={chartData}
                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
@@ -201,7 +200,7 @@ const ReportsView = () => {
                 <Bar dataKey="expenses" fill="#f44336" name="Egresos" />
                 <Bar dataKey="balance" fill="#2196F3" name="Balance" />
               </BarChart>
-            </ResponsiveContainer>
+            </ResponsiveContainer> */}
           </div>
         </CardContent>
       </Card>

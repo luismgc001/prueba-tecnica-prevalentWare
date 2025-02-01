@@ -4,7 +4,9 @@ import { useUser } from '@auth0/nextjs-auth0/client';
 import { getSession, withPageAuthRequired } from '@auth0/nextjs-auth0';
 
 export async function getServerSideProps(context) {
-  const session = await getSession(context.req, context.res);
+
+  try{
+    const session = await getSession(context.req, context.res);
 
   if (!session) {
     return {
@@ -21,6 +23,17 @@ export async function getServerSideProps(context) {
       permanent: false,
     },
   };
+
+
+  }
+  catch(error){
+    return {
+      props: {
+        error: "Error de conexión con la base de datos. Por favor intente más tarde."
+      }
+
+  }
+  
 }
 
 export default function Home() {

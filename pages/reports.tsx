@@ -1,44 +1,63 @@
 import { getSession } from "@auth0/nextjs-auth0";
 import { PrismaClient } from "@prisma/client";
 import ReportsView from "@/components/ReportsView";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import ChartView from "@/components/ChartView";
 import Link from "next/link";
 
 const prisma = new PrismaClient();
 
 export async function getServerSideProps(context) {
-  const session = await getSession(context.req, context.res);
+  try {
+    const session = await getSession(context.req, context.res);
 
-  if (!session) {
+    if (!session) {
+      return {
+        redirect: {
+          destination: "/main",
+          permanent: false,
+        },
+      };
+    }
+
+    const id = session.user.sub;
+    const user = await prisma.user.findUnique({
+      where: { id },
+      select: { role: true },
+    });
+
+    if (!user || user.role !== "Admin") {
+      return {
+        redirect: {
+          destination: "/unauthorized",
+          permanent: false,
+        },
+      };
+    }
+
     return {
-      redirect: {
-        destination: "/main",
-        permanent: false,
+      props: {},
+    };
+  } catch (error) {
+    return {
+      props: {
+        error:
+          "Error de conexión con la base de datos. Por favor intente más tarde.",
       },
     };
   }
-
-  const id = session.user.sub;
-  const user = await prisma.user.findUnique({
-    where: { id },
-    select: { role: true },
-  });
-
-  if (!user || user.role !== "Admin") {
-    return {
-      redirect: {
-        destination: "/unauthorized",
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {},
-  };
 }
 
-export default function Reports() {
+export default function Reports({ error }) {
+  if (error) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
   return (
     <div className="flex h-screen">
       <aside className="w-1/4 bg-gray-100 p-4">
