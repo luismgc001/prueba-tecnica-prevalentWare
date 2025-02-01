@@ -46,6 +46,13 @@ export const typeDefs = gql`
 // Define resolvers
 export const resolvers = {
   Query: {
+    users: async (_, __, context) => {
+      if (!context.user || context.user.role !== 'Admin') {
+        throw new Error('Admin access required');
+      }
+  
+      return await prisma.user.findMany();
+    },
     movements: async (_, __, context) => {
             
       if (!context.user) {
@@ -90,6 +97,16 @@ export const resolvers = {
   
   
   Mutation: {
+    updateUser: async (_, { id, name, role }, context) => {
+      if (!context.user || context.user.role !== 'Admin') {
+        throw new Error('Admin access required');
+      }
+  
+      return await prisma.user.update({
+        where: { id },
+        data: { name, role }
+      });
+    },
     createMovement: async (_, { concept, amount, date }, context) => {
       if (!context.user) {
         throw new Error('Authentication required');

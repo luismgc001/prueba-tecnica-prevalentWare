@@ -146,11 +146,6 @@ const ReportsView = () => {
           </Button>
         </div>
       </div>
-      <ReportBarChart
-        income={chartData[0]?.income || 0}
-        expense={chartData[0]?.expenses || 0}
-        balance={chartData[0]?.balance || 0}
-      />
 
       <Card>
         <CardHeader>
@@ -165,14 +160,19 @@ const ReportsView = () => {
           </div>
         </CardContent>
       </Card>
+      <ReportBarChart
+        income={chartData[0]?.income || 0}
+        expense={chartData[0]?.expenses || 0}
+        balance={chartData[0]?.balance || 0}
+      />
 
-      <Card>
+      {/* <Card>
         <CardHeader>
           <CardTitle>Movimientos Financieros</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="h-96">
-            {/* <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={chartData}
                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
@@ -200,10 +200,10 @@ const ReportsView = () => {
                 <Bar dataKey="expenses" fill="#f44336" name="Egresos" />
                 <Bar dataKey="balance" fill="#2196F3" name="Balance" />
               </BarChart>
-            </ResponsiveContainer> */}
+            </ResponsiveContainer>
           </div>
         </CardContent>
-      </Card>
+      </Card> */}
     </div>
   );
 };
