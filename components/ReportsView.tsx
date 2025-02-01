@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery, gql } from "@apollo/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,25 +13,60 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import ReportBarChart from "./ReportBarChart";
 
 const GET_REPORTS = gql`
-  query GetReports {
-    movements {
+  query GetReports($userId: ID) {
+    movements(userId: $userId) {
       id
       concept
       amount
       date
       user {
+        id
         name
       }
     }
   }
 `;
+const GET_USERS = gql`
+  query GetUsers {
+    users {
+      id
+      name
+    }
+  }
+`;
 
 const ReportsView = () => {
-  const { data, loading, error } = useQuery(GET_REPORTS);
   const [selectedPeriod, setSelectedPeriod] = React.useState("monthly");
+  const { data: userData } = useQuery(GET_USERS);
+  const { data: currentUserData } = useQuery(gql`
+    query GetCurrentUser {
+      currentUser {
+        id
+        name
+      }
+    }
+  `);
+  const [selectedUserId, setSelectedUserId] = useState(
+    currentUserData?.currentUser?.id || null
+  );
+  const { data, loading, error } = useQuery(GET_REPORTS, {
+    variables: { userId: selectedUserId },
+  });
+  useEffect(() => {
+    if (currentUserData?.currentUser?.id) {
+      setSelectedUserId(currentUserData.currentUser.id);
+    }
+  }, [currentUserData]);
 
   if (loading) {
     return (
@@ -141,6 +176,18 @@ const ReportsView = () => {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Reportes Financieros</h1>
         <div className="flex gap-4 items-center">
+          <Select value={selectedUserId} onValueChange={setSelectedUserId}>
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder="Seleccionar usuario" />
+            </SelectTrigger>
+            <SelectContent>
+              {userData?.users.map((user) => (
+                <SelectItem key={user.id} value={user.id}>
+                  {user.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <Button onClick={downloadCSV} variant="secondary">
             Descargar CSV
           </Button>

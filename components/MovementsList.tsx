@@ -1,8 +1,8 @@
 import { useQuery, gql } from "@apollo/client";
 
 export const GET_MOVEMENTS = gql`
-  query GetMovements {
-    movements {
+  query GetMovements($userId: ID) {
+    movements(userId: $userId) {
       id
       concept
       amount
@@ -16,10 +16,17 @@ export const GET_MOVEMENTS = gql`
 `;
 
 export default function MovementsList() {
-  const { data, loading, error } = useQuery(GET_MOVEMENTS);
+  const { data: userData } = useQuery(gql`
+    query GetCurrentUser {
+      currentUser {
+        id
+      }
+    }
+  `);
 
-  console.log("DATA MOV LIST", data);
-
+  const { data, loading, error } = useQuery(GET_MOVEMENTS, {
+    variables: { userId: userData?.currentUser?.id },
+  });
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 

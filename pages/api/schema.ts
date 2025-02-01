@@ -7,8 +7,9 @@ const prisma = new PrismaClient();
 
 export const typeDefs = gql`
   type Query {
+  currentUser: User
     users: [User!]!
-    movements: [Movement!]!
+    movements(userId: ID): [Movement!]!
     reports: ReportData!
   }
 
@@ -46,6 +47,10 @@ export const typeDefs = gql`
 // Define resolvers
 export const resolvers = {
   Query: {
+    currentUser: async (_, __, context) => {
+      if (!context.user) throw new Error('Not authenticated');
+      return context.user;
+    },
     users: async (_, __, context) => {
       if (!context.user || context.user.role !== 'Admin') {
         throw new Error('Admin access required');
@@ -53,18 +58,20 @@ export const resolvers = {
   
       return await prisma.user.findMany();
     },
-    movements: async (_, __, context) => {
-            
+    movements: async (_, { userId }, context) => {
       if (!context.user) {
         throw new Error('Authentication required');
       }
 
+      const where = {
+        ...(userId ? { userId } : {}),
+        ...(context.user.role !== 'Admin' ? { userId: context.user.id } : {})
+      };
+
       return await prisma.movement.findMany({
-        where: { userId: context.user.id },
+        where,
         orderBy: { date: 'desc' },
-        include:{
-          user:true
-        }
+        include: { user: true }
       });
     },
     reports: async (_, __, context) => {
