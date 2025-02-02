@@ -1,11 +1,13 @@
-// File: /pages/index.js
 import Link from "next/link";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { getSession, withPageAuthRequired } from "@auth0/nextjs-auth0";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { getSession } from "@auth0/nextjs-auth0";
 
 export async function getServerSideProps(context) {
   try {
     const session = await getSession(context.req, context.res);
+    console.log("SESSION: ", session);
 
     if (!session) {
       return {
@@ -18,7 +20,7 @@ export async function getServerSideProps(context) {
 
     return {
       redirect: {
-        destination: "/movements", // O la ruta principal para usuarios autenticados
+        destination: "/movements",
         permanent: false,
       },
     };
@@ -33,18 +35,18 @@ export async function getServerSideProps(context) {
 }
 
 export default function Home() {
-  const { user } = useUser();
-  console.log("USER: ", user);
-  // const { data: session } = useSession();
-  // const router = useRouter();
+  const { user, isLoading } = useUser();
+  const router = useRouter();
 
-  // useEffect(() => {
-  //   if (!session) {
-  //     signIn(); // Redirect to login if not authenticated
-  //   }
-  // }, [session, router]);
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.push("/login"); // Redirección usando Next.js router
+    }
+  }, [isLoading, user, router]);
 
-  // if (!session) return null; // Render nothing while redirecting
+  if (isLoading) return <div>Loading...</div>;
+  if (!user) return null; // Evitar el renderizado mientras redirige
+
   return (
     <div className="flex h-screen">
       <aside className="w-1/4 bg-gray-100 p-4">

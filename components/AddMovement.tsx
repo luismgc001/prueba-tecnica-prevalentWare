@@ -103,7 +103,6 @@ export default function AddMovement({ onClose }) {
         description: "Movimiento creado correctamente",
         className: "success",
         duration: 3000,
-        position: "top-center",
       });
       setConcept("Ingreso");
       setAmount("");
@@ -116,7 +115,6 @@ export default function AddMovement({ onClose }) {
         description: error.message,
         className: "error",
         duration: 3000,
-        position: "top-center",
       });
     }
   };

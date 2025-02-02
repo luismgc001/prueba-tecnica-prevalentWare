@@ -5,6 +5,7 @@ import { getSession } from "@auth0/nextjs-auth0";
 import { Toaster } from "@/components/ui/toaster";
 import MovementsList from "@/components/MovementsList"; // Componente para listar movimientos
 import AddMovement from "@/components/AddMovement"; // Componente para agregar movimiento
+import { toast } from "@/hooks/use-toast";
 
 const prisma = new PrismaClient();
 
@@ -113,6 +114,7 @@ export default function Movements({ role }) {
           </button>
         )}
       </main>
+
       <Toaster />
     </div>
   );
