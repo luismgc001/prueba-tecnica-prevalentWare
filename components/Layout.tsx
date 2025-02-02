@@ -66,7 +66,7 @@ export default function Layout({ children, role = "User" }: LayoutProps) {
         <div className="p-6">
           <div className="mb-8 p-2 rounded-md">
             <Image
-              src="https://www.prevalentware.com/wp-content/uploads/2024/07/logo-prevalentware.png"
+              src="/images/logo-prevalentware.png"
               alt="Prevalentware Logo"
               width={150}
               height={40}
