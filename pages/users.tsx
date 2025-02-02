@@ -3,6 +3,8 @@ import Link from "next/link";
 import { useQuery, gql, useMutation } from "@apollo/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card } from "@/components/ui/card";
+import { checkAuth } from "@/lib/authHelper";
+import Layout from "@/components/Layout";
 
 const GET_USERS = gql`
   query GetUsers {
@@ -24,6 +26,9 @@ const UPDATE_USER = gql`
     }
   }
 `;
+export async function getServerSideProps(context) {
+  return checkAuth(context, { requireAdmin: true });
+}
 
 export default function Users() {
   const [showModal, setShowModal] = useState(false);
@@ -39,19 +44,23 @@ export default function Users() {
 
   if (loading) {
     return (
-      <Card className="w-full h-96">
-        <div className="flex items-center justify-center h-full">
-          Loading...
-        </div>
-      </Card>
+      <Layout role="Admin">
+        <Card className="w-full h-96">
+          <div className="flex items-center justify-center h-full">
+            Loading...
+          </div>
+        </Card>
+      </Layout>
     );
   }
 
   if (error) {
     return (
-      <Alert variant="destructive">
-        <AlertDescription>Error: {error.message}</AlertDescription>
-      </Alert>
+      <Layout role="Admin">
+        <Alert variant="destructive">
+          <AlertDescription>Error: {error.message}</AlertDescription>
+        </Alert>
+      </Layout>
     );
   }
 
@@ -77,23 +86,7 @@ export default function Users() {
   };
 
   return (
-    <div className="flex h-screen">
-      <aside className="w-1/4 bg-gray-100 p-4">
-        <h1 className="mb-8 text-xl font-bold">LOGO</h1>
-        <nav>
-          <ul>
-            <li className="mb-4">
-              <Link href="/movements">Ingresos y egresos</Link>
-            </li>
-            <li className="mb-4">
-              <Link href="/users">Usuarios</Link>
-            </li>
-            <li>
-              <Link href="/reports">Reportes</Link>
-            </li>
-          </ul>
-        </nav>
-      </aside>
+    <Layout role="Admin">
       <main className="w-3/4 p-8">
         <h2 className="text-2xl font-bold">Gestión de usuarios</h2>
         <div className="mt-8">
@@ -199,6 +192,6 @@ export default function Users() {
           )}
         </div>
       </main>
-    </div>
+    </Layout>
   );
 }

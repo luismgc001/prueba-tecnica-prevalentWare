@@ -1,95 +1,41 @@
-import Link from "next/link";
+import { toast } from "@/hooks/use-toast";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { useEffect } from "react";
-import { useRouter } from "next/router";
-import { getSession } from "@auth0/nextjs-auth0";
+import Link from "next/link";
 
-export async function getServerSideProps(context) {
-  try {
-    const session = await getSession(context.req, context.res);
-    console.log("SESSION: ", session);
-
-    if (!session) {
-      return {
-        redirect: {
-          destination: "/main",
-          permanent: false,
-        },
-      };
-    }
-
-    return {
-      redirect: {
-        destination: "/movements",
-        permanent: false,
-      },
-    };
-  } catch (error) {
-    return {
-      props: {
-        error:
-          "Error de conexión con la base de datos. Por favor intente más tarde.",
-      },
-    };
-  }
-}
-
-export default function Home() {
-  const { user, isLoading } = useUser();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!isLoading && !user) {
-      router.push("/login"); // Redirección usando Next.js router
-    }
-  }, [isLoading, user, router]);
-
-  if (isLoading) return <div>Loading...</div>;
-  if (!user) return null; // Evitar el renderizado mientras redirige
+export default function MainPage() {
+  const { user } = useUser();
 
   return (
-    <div className="flex h-screen">
-      <aside className="w-1/4 bg-gray-100 p-4">
-        <h1 className="mb-8 text-xl font-bold">LOGO</h1>
-        <nav>
-          <ul>
-            <li className="mb-4">
-              <Link href="/movements">Ingresos y egresos</Link>
-            </li>
-            <li className="mb-4">
-              <Link href="/users">Usuarios</Link>
-            </li>
-            <li>
-              <Link href="/reports">Reportes</Link>
-            </li>
-          </ul>
-        </nav>
-      </aside>
-      <main className="w-3/4 p-8">
-        <h2 className="text-2xl font-bold">
-          Sistema de gestión de ingresos y gastos
-        </h2>
-        <div className="grid grid-cols-3 gap-4 mt-8">
+    <div className="flex flex-col items-center justify-center h-screen">
+      <h1 className="text-4xl font-bold mb-8">Bienvenido a la Aplicación</h1>
+      <p className="text-lg mb-4 text-center">
+        Explora las funcionalidades de nuestra plataforma. Para acceder a la
+        gestión de usuarios, reportes, y más, por favor inicia sesión.
+      </p>
+      {user ? (
+        <div className="flex flex-col items-center justify-center h-screen">
+          <h1 className="text-2xl font-bold mb-4">Welcome, {user.name}!</h1>
           <Link
             href="/movements"
-            className="p-4 bg-gray-200 text-center rounded-md shadow-md hover:bg-gray-300"
+            className="px-4 py-2 bg-blue-500 text-white rounded-md"
           >
-            Sistema de gestión de ingresos y gastos
+            Go to Dashboard
           </Link>
           <Link
-            href="/users"
-            className="p-4 bg-gray-200 text-center rounded-md shadow-md hover:bg-gray-300"
+            href="/api/auth/logout"
+            className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md"
           >
-            Gestión de usuarios
-          </Link>
-          <Link
-            href="/reports"
-            className="p-4 bg-gray-200 text-center rounded-md shadow-md hover:bg-gray-300"
-          >
-            Reportes
+            Logout
           </Link>
         </div>
-      </main>
+      ) : (
+        <Link
+          href="/api/auth/login"
+          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+        >
+          Iniciar Sesión
+        </Link>
+      )}
     </div>
   );
 }
