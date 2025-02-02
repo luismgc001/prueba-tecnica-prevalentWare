@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import ChartView from "./ChartView";
+import LoadingSpinner from "./LoadingSpinner";
 
 const GET_REPORTS = gql`
   query GetReports($userId: ID) {
@@ -69,16 +70,7 @@ const ReportsView = () => {
     }
   }, [currentUserData]);
 
-  if (loading) {
-    return (
-      <Card className="w-full h-96">
-        <CardContent className="flex items-center justify-center h-full">
-          Loading...
-        </CardContent>
-      </Card>
-    );
-  }
-
+  if (loading) return <LoadingSpinner />;
   if (error) {
     return (
       <Alert variant="destructive">

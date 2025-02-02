@@ -1,8 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { getSession } from '@auth0/nextjs-auth0';
 import { Role } from '@/lib/enums';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 export const createContext = async (req, res) => {
   // Obtener la sesión desde Auth0

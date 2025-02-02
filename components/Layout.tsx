@@ -105,7 +105,6 @@ export default function Layout({ children, role = "User" }: LayoutProps) {
         <div className="max-w-7xl mx-auto">
           {/* Breadcrumb */}
           <div className="mb-6 text-sm text-gray-400">
-            <span>Estás en: </span>
             <span className="text-white font-medium">
               {pathname === "/movements" && "Ingresos y egresos"}
               {pathname === "/users" && "Usuarios"}

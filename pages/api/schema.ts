@@ -1,9 +1,7 @@
 // Define GraphQL schema
 
 import { gql } from 'graphql-tag';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 export const typeDefs = gql`
   type Query {

@@ -1,4 +1,6 @@
 import { useQuery, gql } from "@apollo/client";
+import LoadingSpinner from "./LoadingSpinner";
+import { useState } from "react";
 
 export const GET_MOVEMENTS = gql`
   query GetMovements($userId: ID) {
@@ -15,7 +17,8 @@ export const GET_MOVEMENTS = gql`
   }
 `;
 
-export default function MovementsList() {
+export default function MovementsList({ role }) {
+  const [showModal, setShowModal] = useState(false);
   const { data: userData } = useQuery(gql`
     query GetCurrentUser {
       currentUser {
@@ -28,7 +31,7 @@ export default function MovementsList() {
     variables: { userId: userData?.currentUser?.id },
     pollInterval: 1000,
   });
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <LoadingSpinner />;
   if (error) return <p>Error: {error.message}</p>;
 
   // Función para formatear montos como moneda entera
@@ -109,6 +112,14 @@ export default function MovementsList() {
           </tr>
         </tfoot>
       </table>
+      {role === "Admin" && (
+        <button
+          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mb-4"
+          onClick={() => setShowModal(true)}
+        >
+          Nuevo Movimiento
+        </button>
+      )}
     </div>
   );
 }

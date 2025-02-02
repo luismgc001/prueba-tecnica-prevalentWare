@@ -1,4 +1,5 @@
 import { useState } from "react";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import Link from "next/link";
 import { useQuery, gql, useMutation } from "@apollo/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -45,11 +46,7 @@ export default function Users() {
   if (loading) {
     return (
       <Layout role="Admin">
-        <Card className="w-full h-96">
-          <div className="flex items-center justify-center h-full">
-            Loading...
-          </div>
-        </Card>
+        <LoadingSpinner />
       </Layout>
     );
   }

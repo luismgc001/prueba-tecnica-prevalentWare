@@ -4,8 +4,7 @@ import { startServerAndCreateNextHandler } from '@as-integrations/next';
 import { typeDefs, resolvers } from './schema';
 import { PrismaClient } from '@prisma/client';
 import { getSession } from '@auth0/nextjs-auth0';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 interface MyContext {
   user?: {

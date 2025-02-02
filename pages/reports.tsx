@@ -6,8 +6,6 @@ import Link from "next/link";
 import { checkAuth } from "@/lib/authHelper";
 import Layout from "@/components/Layout";
 
-const prisma = new PrismaClient();
-
 export async function getServerSideProps(context) {
   return checkAuth(context, { requireAdmin: true });
 }

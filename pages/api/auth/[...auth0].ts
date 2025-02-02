@@ -1,7 +1,5 @@
 import { handleAuth, handleCallback, getSession } from '@auth0/nextjs-auth0';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 export default handleAuth({
   async callback(req, res) {
