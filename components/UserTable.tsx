@@ -83,7 +83,7 @@ export function UserTable() {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Nombre
+            Usuario
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -261,7 +261,7 @@ export function UserTable() {
               >
                 <div className="mb-4">
                   <label className="block text-gray-700 font-medium mb-2">
-                    Nombre
+                    Usuario
                   </label>
                   <input
                     type="text"

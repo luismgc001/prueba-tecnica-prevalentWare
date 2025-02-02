@@ -110,7 +110,7 @@ const columns: ColumnDef<Movement>[] = [
   },
 ];
 
-export function MovementsTable({ data }) {
+export function MovementsTable({ data, role, onAddMovement }) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -138,6 +138,16 @@ export function MovementsTable({ data }) {
 
   return (
     <div className="w-full">
+      <div className="flex items-center justify-between py-4">
+        {role === "Admin" && (
+          <Button
+            onClick={onAddMovement}
+            className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-400"
+          >
+            Nuevo Movimiento
+          </Button>
+        )}
+      </div>
       <div className="flex items-center py-4">
         <Input
           placeholder="Filtrar por usuario..."

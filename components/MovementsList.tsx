@@ -2,6 +2,8 @@ import { gql, useQuery } from "@apollo/client";
 import LoadingSpinner from "./LoadingSpinner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { MovementsTable } from "./MovementsTable";
+import { useState } from "react";
+import AddMovement from "./AddMovement";
 
 export const GET_MOVEMENTS = gql`
   query GetMovements($userId: ID) {
@@ -19,6 +21,7 @@ export const GET_MOVEMENTS = gql`
 `;
 
 export default function MovementsList({ role }) {
+  const [showModal, setShowModal] = useState(false);
   const { data: userData } = useQuery(gql`
     query GetCurrentUser {
       currentUser {
@@ -39,5 +42,14 @@ export default function MovementsList({ role }) {
       </Alert>
     );
 
-  return <MovementsTable data={data.movements} />;
+  return (
+    <>
+      <MovementsTable
+        data={data.movements}
+        role={role}
+        onAddMovement={() => setShowModal(true)}
+      />
+      {showModal && <AddMovement onClose={() => setShowModal(false)} />}
+    </>
+  );
 }

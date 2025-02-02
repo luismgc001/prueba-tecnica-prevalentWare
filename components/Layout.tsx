@@ -71,6 +71,7 @@ export default function Layout({ children, role = "User" }: LayoutProps) {
               width={150}
               height={40}
               className="w-full h-auto"
+              priority
             />
           </div>
           <nav>
@@ -92,7 +93,7 @@ export default function Layout({ children, role = "User" }: LayoutProps) {
           </nav>
           <Link
             href="/api/auth/logout"
-            className="block mt-8 w-full py-2 px-4 bg-red-600 hover:bg-red-700 text-white rounded-md text-center transition-colors"
+            className="block mt-8 w-full py-2 px-4 bg-red-800 hover:bg-red-950 text-white rounded-md text-center transition-colors"
           >
             Cerrar Sesión
           </Link>
