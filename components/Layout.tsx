@@ -31,7 +31,7 @@ export default function Layout({ children, role = "User" }: LayoutProps) {
         href={href}
         className={`block py-2 px-4 rounded-md transition-colors relative ${
           isActive
-            ? "bg-indigo-600 text-white"
+            ? "bg-gray-900 text-white"
             : "hover:bg-gray-700 hover:text-indigo-400"
         }`}
       >
@@ -71,7 +71,6 @@ export default function Layout({ children, role = "User" }: LayoutProps) {
               width={150}
               height={40}
               className="w-full h-auto"
-              priority
             />
           </div>
           <nav>
@@ -101,18 +100,8 @@ export default function Layout({ children, role = "User" }: LayoutProps) {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-8 bg-gray-900 overflow-y-auto">
-        <div className="max-w-7xl mx-auto">
-          {/* Breadcrumb */}
-          <div className="mb-6 text-sm text-gray-400">
-            <span className="text-white font-medium">
-              {pathname === "/movements" && "Ingresos y egresos"}
-              {pathname === "/users" && "Usuarios"}
-              {pathname === "/reports" && "Reportes"}
-            </span>
-          </div>
-          {children}
-        </div>
+      <main className="flex-1 p-8 bg-gray-950 overflow-y-auto">
+        <div className="max-w-7xl mx-auto">{children}</div>
       </main>
     </div>
   );
