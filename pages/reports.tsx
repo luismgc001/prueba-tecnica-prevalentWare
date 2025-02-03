@@ -25,7 +25,7 @@ export default function Reports({ error }) {
     <Layout role="Admin">
       <div className="space-y-6">
         <h1 className="text-2xl font-bold">Reportes Financieros</h1>
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid gap-6">
           <ReportsView />
         </div>
       </div>

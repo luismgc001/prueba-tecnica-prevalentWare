@@ -44,7 +44,7 @@ const ChartView = ({ data }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Historial de Balance</CardTitle>
+        <CardTitle>Historial del Balance</CardTitle>
         <CardDescription>Evolución del balance en el tiempo</CardDescription>
       </CardHeader>
       <CardContent>
@@ -56,6 +56,11 @@ const ChartView = ({ data }) => {
               tickLine={false}
               axisLine={false}
               tickMargin={8}
+              tickFormatter={(value) => {
+                // Extraer mes y día del formato YYYY-MM-DD
+                const [year, month, day] = value.split("-");
+                return `${month}-${day}`;
+              }}
             />
             <ChartTooltip content={<ChartTooltipContent />} />
             <Line

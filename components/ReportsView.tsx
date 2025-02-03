@@ -194,6 +194,7 @@ const ReportsView = () => {
   return (
     <div>
       <div className="space-y-6">
+        {/* Filtros */}
         <div className="flex gap-4 items-center">
           <Select value={selectedUserId} onValueChange={setSelectedUserId}>
             <SelectTrigger className="w-[200px]">
@@ -212,19 +213,48 @@ const ReportsView = () => {
           </Button>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Balance General</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">
-              {new Intl.NumberFormat("es-MX", {
-                style: "currency",
-                currency: "MXN",
-              }).format(totalBalance)}
-            </div>
-          </CardContent>
-        </Card>
+        {/* Grid para balances */}
+        <div className="grid grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Balance General</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <p className="text-sm text-gray-400 mb-1">Balance Total</p>
+                  <div className="text-xl font-bold">
+                    {new Intl.NumberFormat("es-MX", {
+                      style: "currency",
+                      currency: "MXN",
+                    }).format(totalBalance)}
+                  </div>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-400 mb-1">Total Ingresos</p>
+                  <div className="text-xl font-bold text-green-500">
+                    {new Intl.NumberFormat("es-MX", {
+                      style: "currency",
+                      currency: "MXN",
+                    }).format(totals.income)}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-sm text-gray-400 mb-1">Total Gastos</p>
+                  <div className="text-xl font-bold text-red-500">
+                    {new Intl.NumberFormat("es-MX", {
+                      style: "currency",
+                      currency: "MXN",
+                    }).format(totals.expenses)}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Grid para gráficas */}
         <div className="grid grid-cols-2 gap-6">
           <ReportBarChart
             income={totals.income || 0}
