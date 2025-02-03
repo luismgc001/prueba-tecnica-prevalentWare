@@ -1,14 +1,10 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
-import { useQuery, gql } from "@apollo/client";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -19,28 +15,15 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-const GET_REPORTS = gql`
-  query GetReports {
-    movements {
-      id
-      concept
-      amount
-      date
-      user {
-        name
-      }
-    }
-  }
-`;
-
 const chartConfig = {
   balance: {
     label: "balance",
     color: "hsl(var(--chart-1))",
   },
 } satisfies ChartConfig;
+import { ChartData } from "@/types/components";
 
-const ChartView = ({ data }) => {
+const ChartView: React.FC<{ data: ChartData[] }> = ({ data }) => {
   return (
     <Card>
       <CardHeader>

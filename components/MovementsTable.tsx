@@ -15,7 +15,6 @@ import {
 } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -24,17 +23,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-type Movement = {
-  id: string;
-  concept: string;
-  amount: number;
-  date: string;
-  user: {
-    id: string;
-    name: string;
-  };
-};
+import { Movement } from "@/types/movement";
+import { MovementsTableProps } from "@/types/components";
 
 const columns: ColumnDef<Movement>[] = [
   {
@@ -110,7 +100,11 @@ const columns: ColumnDef<Movement>[] = [
   },
 ];
 
-export function MovementsTable({ data, role, onAddMovement }) {
+export function MovementsTable({
+  data,
+  role,
+  onAddMovement,
+}: MovementsTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []

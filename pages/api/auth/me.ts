@@ -1,6 +1,16 @@
 import { getSession } from '@auth0/nextjs-auth0';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(req, res) {
+interface ExtendedNextApiRequest extends NextApiRequest {
+ user?: {
+   sub: string;
+   name: string;
+   nickname: string;
+   picture: string;
+ }
+}
+
+export default async function handler(req: ExtendedNextApiRequest, res: NextApiResponse) {
   try {
     const session = await getSession(req, res);
     
@@ -10,7 +20,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       accessToken: session.accessToken, // Token de acceso para Apollo Client
-      user: session.user, // Información del usuario
+      ...session.user, // Información del usuario
     });
   } catch (error) {
     console.error('Error en /api/auth/me:', error);

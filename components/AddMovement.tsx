@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { useMutation, gql } from "@apollo/client";
 import { useToast } from "@/hooks/use-toast";
 import { GET_MOVEMENTS } from "./MovementsList";
@@ -35,7 +35,11 @@ const CREATE_MOVEMENT = gql`
   }
 `;
 
-export default function AddMovement({ onClose }) {
+export default function AddMovement({
+  onClose,
+}: {
+  onClose: (ev?: any) => {};
+}) {
   const { toast } = useToast();
   const [concept, setConcept] = useState("Ingreso");
   const [amount, setAmount] = useState("");
@@ -66,7 +70,7 @@ export default function AddMovement({ onClose }) {
     },
   });
 
-  const validateAmount = (value) => {
+  const validateAmount = (value: string) => {
     const numValue = parseInt(value);
     if (isNaN(numValue)) {
       setError("El monto debe ser un número válido");
@@ -88,7 +92,7 @@ export default function AddMovement({ onClose }) {
     return true;
   };
 
-  const handleAmountChange = (e) => {
+  const handleAmountChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setAmount(value);
     validateAmount(value);
@@ -138,10 +142,10 @@ export default function AddMovement({ onClose }) {
       setError("");
       onClose();
       setIsSaving(false);
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: error.message,
+        description: error?.message,
         className: "error",
         duration: 3000,
       });

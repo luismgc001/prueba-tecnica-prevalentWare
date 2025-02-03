@@ -37,13 +37,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { User, SelectedUser } from "@/types/user";
 
-type User = {
-  id: string;
-  name: string;
-  email: string;
-  role: "Admin" | "User";
-};
 const GET_USERS = gql`
   query GetUsers {
     users {
@@ -67,7 +62,7 @@ const UPDATE_USER = gql`
 
 export function UserTable() {
   const [showModal, setShowModal] = useState(false);
-  const [selectedUser, setSelectedUser] = useState({
+  const [selectedUser, setSelectedUser] = useState<SelectedUser>({
     id: "",
     name: "",
     role: "",
@@ -136,7 +131,7 @@ export function UserTable() {
       },
     },
   ];
-  const handleEdit = (user) => {
+  const handleEdit = (user: User) => {
     setSelectedUser(user);
     setShowModal(true);
   };

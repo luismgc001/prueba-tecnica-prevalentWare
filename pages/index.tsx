@@ -4,6 +4,7 @@ import { ArrowRight, DollarSign, Users, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+import { User } from "@/types/user";
 
 export default function MainPage() {
   const { user, isLoading } = useUser();

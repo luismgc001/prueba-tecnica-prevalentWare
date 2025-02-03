@@ -1,8 +1,18 @@
 import { handleAuth, handleCallback, getSession } from '@auth0/nextjs-auth0';
 import { prisma } from '@/lib/prisma';
+import { NextApiRequest, NextApiResponse } from 'next';
+
+interface ExtendedNextApiRequest extends NextApiRequest {
+ user?: {
+   sub: string;
+   name: string;
+   nickname: string;
+   picture: string;
+ }
+}
 
 export default handleAuth({
-  async callback(req, res) {
+  async callback(req: ExtendedNextApiRequest, res: NextApiResponse) {
     try {
       await handleCallback(req, res);
       const session = await getSession(req, res);

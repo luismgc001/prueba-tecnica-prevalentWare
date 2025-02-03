@@ -5,16 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import ReportBarChart from "./ReportBarChart";
 import {
-  BarChart,
-  Bar,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-} from "recharts";
-import {
   Select,
   SelectContent,
   SelectItem,
@@ -23,6 +13,15 @@ import {
 } from "@/components/ui/select";
 import ChartView from "./ChartView";
 import LoadingSpinner from "./LoadingSpinner";
+import {
+  Movement,
+  ChartDataPoint,
+  GetReportsData,
+  AccumulatorType,
+  Totals,
+  BalanceHistoryPoint,
+} from "@/types/ReportsView";
+import { User } from "@/types/user";
 
 const GET_REPORTS = gql`
   query GetReports($userId: ID) {
@@ -48,7 +47,9 @@ const GET_USERS = gql`
 `;
 
 const ReportsView = () => {
-  const [selectedPeriod, setSelectedPeriod] = React.useState("monthly");
+  const [selectedPeriod, setSelectedPeriod] = React.useState<
+    "monthly" | "yearly"
+  >("monthly");
   const { data: userData } = useQuery(GET_USERS);
   const { data: currentUserData } = useQuery(gql`
     query GetCurrentUser {
@@ -58,10 +59,10 @@ const ReportsView = () => {
       }
     }
   `);
-  const [selectedUserId, setSelectedUserId] = useState(
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(
     currentUserData?.currentUser?.id || null
   );
-  const { data, loading, error } = useQuery(GET_REPORTS, {
+  const { data, loading, error } = useQuery<GetReportsData>(GET_REPORTS, {
     variables: { userId: selectedUserId },
   });
   useEffect(() => {
@@ -84,35 +85,38 @@ const ReportsView = () => {
   const totalBalance = movements.reduce((acc, mov) => acc + mov.amount, 0);
   console.log("TOTALB", totalBalance);
 
-  const processData = (movements) => {
-    const groupedData = movements.reduce((acc, mov) => {
-      const date = new Date(Number(mov.date));
-      const key =
-        selectedPeriod === "monthly"
-          ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
-              2,
-              "0"
-            )}`
-          : date.getFullYear().toString();
+  const processData = (movements: Movement[]): ChartDataPoint[] => {
+    const groupedData: AccumulatorType = movements.reduce(
+      (acc: AccumulatorType = {}, mov) => {
+        const date = new Date(Number(mov.date));
+        const key =
+          selectedPeriod === "monthly"
+            ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+                2,
+                "0"
+              )}`
+            : date.getFullYear().toString();
 
-      if (!acc[key]) {
-        acc[key] = {
-          period: key,
-          income: 0,
-          expenses: 0,
-          balance: 0,
-        };
-      }
+        if (!acc[key]) {
+          acc[key] = {
+            period: key,
+            income: 0,
+            expenses: 0,
+            balance: 0,
+          };
+        }
 
-      if (mov.amount > 0) {
-        acc[key].income += mov.amount;
-      } else {
-        acc[key].expenses += Math.abs(mov.amount);
-      }
-      acc[key].balance = acc[key].income - acc[key].expenses;
+        if (mov.amount > 0) {
+          acc[key].income += mov.amount;
+        } else {
+          acc[key].expenses += Math.abs(mov.amount);
+        }
+        acc[key].balance = acc[key].income - acc[key].expenses;
 
-      return acc;
-    }, {});
+        return acc;
+      },
+      {}
+    );
 
     return Object.values(groupedData).sort((a, b) =>
       a.period.localeCompare(b.period)
@@ -122,13 +126,13 @@ const ReportsView = () => {
   const chartData = processData(movements);
   console.log("CHARTDATA", chartData);
 
-  const downloadCSV = () => {
+  const downloadCSV = (): void => {
     const headers = ["Fecha", "Concepto", "Monto", "Usuario"];
-    const csvData = movements.map((m) => [
-      new Date(Number(m.date)).toLocaleDateString(),
-      m.concept,
-      m.amount,
-      m.user?.name || "N/A",
+    const csvData = movements.map((movement) => [
+      new Date(Number(movement.date)).toLocaleDateString(),
+      movement.concept,
+      movement.amount,
+      movement.user?.name || "N/A",
     ]);
 
     const csvContent = [
@@ -144,7 +148,7 @@ const ReportsView = () => {
     }.csv`;
     link.click();
   };
-  const getTotals = (movements) => {
+  const getTotals = (movements: Movement[]): Totals => {
     const totals = movements.reduce(
       (acc, mov) => {
         if (mov.amount > 0) {
@@ -161,14 +165,14 @@ const ReportsView = () => {
     return totals;
   };
   const totals = getTotals(movements);
-  function getBalanceHistory(movements) {
+  function getBalanceHistory(movements: Movement[]): BalanceHistoryPoint[] {
     // Crear una copia del arreglo para no modificar el original
     const sortedMovements = [...movements].sort(
       (a, b) => parseInt(a.date) - parseInt(b.date)
     );
 
     // Calcular el balance acumulado
-    let balanceHistory = [];
+    let balanceHistory: BalanceHistoryPoint[] = [];
     let currentBalance = 0;
 
     for (let movement of sortedMovements) {
@@ -196,13 +200,17 @@ const ReportsView = () => {
       <div className="space-y-6">
         {/* Filtros */}
         <div className="flex gap-4 items-center">
-          <Select value={selectedUserId} onValueChange={setSelectedUserId}>
+          <Select
+            value={selectedUserId || ""}
+            onValueChange={setSelectedUserId}
+            defaultValue=""
+          >
             <SelectTrigger className="w-[200px]">
               <SelectValue placeholder="Seleccionar usuario" />
             </SelectTrigger>
             <SelectContent>
-              {userData?.users.map((user) => (
-                <SelectItem key={user.id} value={user.id}>
+              {userData?.users.map((user: User) => (
+                <SelectItem key={user.id} value={user.id || ""}>
                   {user.name}
                 </SelectItem>
               ))}

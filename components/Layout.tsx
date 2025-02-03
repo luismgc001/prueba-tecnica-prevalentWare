@@ -4,16 +4,12 @@ import { usePathname } from "next/navigation";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-
-interface LayoutProps {
-  children: React.ReactNode;
-  role?: string;
-}
+import { LayoutProps, UserData } from "@/types/layout";
 
 export default function Layout({ children, role = "User" }: LayoutProps) {
   const { user } = useUser();
   const pathname = usePathname();
-
+  console.log("USER LAYOUT: ", user);
   // Función para determinar si un enlace está activo
   const isActivePath = (path: string) => {
     return pathname === path;
@@ -79,14 +75,11 @@ export default function Layout({ children, role = "User" }: LayoutProps) {
           <div className="mb-6 p-4 bg-gray-900 rounded-lg">
             <div className="flex items-center space-x-4">
               <Avatar>
-                <AvatarImage src={user?.user?.picture} />
-                <AvatarFallback>{user?.user?.name?.charAt(0)}</AvatarFallback>
+                <AvatarImage src={`${user?.picture}`} />
+                <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
               </Avatar>
               <div className="space-y-1">
-                <p className="text-sm font-medium leading-none">{user?.name}</p>
-                <p className="font-medium text-white-400">
-                  {user?.user?.nickname}
-                </p>
+                <p className="font-medium text-white-400">{user.nickname}</p>
                 <span className="inline-flex items-center rounded-md bg-indigo-400/10 px-2 py-1 text-xs font-medium text-indigo-400 ring-1 ring-inset ring-indigo-400/30">
                   {role}
                 </span>

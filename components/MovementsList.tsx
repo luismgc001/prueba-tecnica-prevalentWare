@@ -4,6 +4,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { MovementsTable } from "./MovementsTable";
 import { useState } from "react";
 import AddMovement from "./AddMovement";
+import { MovementsListProps } from "@/types/movement";
 
 export const GET_MOVEMENTS = gql`
   query GetMovements($userId: ID) {
@@ -20,7 +21,7 @@ export const GET_MOVEMENTS = gql`
   }
 `;
 
-export default function MovementsList({ role }) {
+export default function MovementsList({ role }: MovementsListProps) {
   const [showModal, setShowModal] = useState(false);
   const { data: userData } = useQuery(gql`
     query GetCurrentUser {
@@ -51,7 +52,7 @@ export default function MovementsList({ role }) {
         role={role}
         onAddMovement={() => setShowModal(true)}
       />
-      {showModal && <AddMovement onClose={() => setShowModal(false)} />}
+      {showModal && <AddMovement onClose={async () => setShowModal(false)} />}
     </>
   );
 }

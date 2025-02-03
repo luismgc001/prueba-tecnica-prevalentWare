@@ -1,8 +1,9 @@
 import { checkAuth } from "@/lib/authHelper";
 import Layout from "@/components/Layout";
 import { UserTable } from "@/components/UserTable";
+import { ServerSideContext } from "@/types/components";
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps(context: ServerSideContext) {
   return checkAuth(context, { requireAdmin: true });
 }
 

@@ -5,12 +5,13 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import Link from "next/link";
 import { checkAuth } from "@/lib/authHelper";
 import Layout from "@/components/Layout";
+import { ServerSideContext } from "@/types/components";
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps(context: ServerSideContext) {
   return checkAuth(context, { requireAdmin: true });
 }
 
-export default function Reports({ error }) {
+export default function Reports({ error }: { error: any }) {
   if (error) {
     return (
       <div className="flex h-screen items-center justify-center">
