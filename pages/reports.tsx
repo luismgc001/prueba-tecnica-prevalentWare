@@ -23,8 +23,11 @@ export default function Reports({ error }) {
 
   return (
     <Layout role="Admin">
-      <div className="grid grid-cols-2 gap-6">
-        <ReportsView />
+      <div className="space-y-6">
+        <h1 className="text-2xl font-bold">Reportes Financieros</h1>
+        <div className="grid grid-cols-2 gap-6">
+          <ReportsView />
+        </div>
       </div>
     </Layout>
   );

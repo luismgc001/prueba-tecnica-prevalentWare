@@ -75,7 +75,7 @@ const columns: ColumnDef<Movement>[] = [
 
       return (
         <div
-          className={`font-medium ${
+          className={`font-medium  ${
             amount >= 0 ? "text-green-600" : "text-red-600"
           }`}
         >
@@ -148,18 +148,7 @@ export function MovementsTable({ data, role, onAddMovement }) {
           </Button>
         )}
       </div>
-      <div className="flex items-center py-4">
-        <Input
-          placeholder="Filtrar por usuario..."
-          value={
-            (table.getColumn("user.name")?.getFilterValue() as string) ?? ""
-          }
-          onChange={(event) =>
-            table.getColumn("user.name")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
-      </div>
+      <div className="flex items-center py-4"></div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>

@@ -194,25 +194,22 @@ const ReportsView = () => {
   return (
     <div>
       <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Reportes Financieros</h1>
-          <div className="flex gap-4 items-center">
-            <Select value={selectedUserId} onValueChange={setSelectedUserId}>
-              <SelectTrigger className="w-[200px]">
-                <SelectValue placeholder="Seleccionar usuario" />
-              </SelectTrigger>
-              <SelectContent>
-                {userData?.users.map((user) => (
-                  <SelectItem key={user.id} value={user.id}>
-                    {user.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Button onClick={downloadCSV} variant="secondary">
-              Descargar CSV
-            </Button>
-          </div>
+        <div className="flex gap-4 items-center">
+          <Select value={selectedUserId} onValueChange={setSelectedUserId}>
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder="Seleccionar usuario" />
+            </SelectTrigger>
+            <SelectContent>
+              {userData?.users.map((user) => (
+                <SelectItem key={user.id} value={user.id}>
+                  {user.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button onClick={downloadCSV} variant="secondary">
+            Descargar CSV
+          </Button>
         </div>
 
         <Card>
@@ -228,45 +225,6 @@ const ReportsView = () => {
             </div>
           </CardContent>
         </Card>
-
-        {/* <Card>
-        <CardHeader>
-          <CardTitle>Movimientos Financieros</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="h-96">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={chartData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                  dataKey="period"
-                  tickFormatter={(value) =>
-                    selectedPeriod === "monthly"
-                      ? value.split("-")[1] + "/" + value.split("-")[0]
-                      : value
-                  }
-                />
-                <YAxis />
-                <Tooltip
-                  formatter={(value) =>
-                    new Intl.NumberFormat("es-MX", {
-                      style: "currency",
-                      currency: "MXN",
-                    }).format(value)
-                  }
-                />
-                <Legend />
-                <Bar dataKey="income" fill="#4CAF50" name="Ingresos" />
-                <Bar dataKey="expenses" fill="#f44336" name="Egresos" />
-                <Bar dataKey="balance" fill="#2196F3" name="Balance" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </CardContent>
-      </Card> */}
         <div className="grid grid-cols-2 gap-6">
           <ReportBarChart
             income={totals.income || 0}
