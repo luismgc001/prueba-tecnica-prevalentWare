@@ -45,18 +45,18 @@ export const typeDefs = gql`
 // Define resolvers
 export const resolvers = {
   Query: {
-    currentUser: async (_, __, context) => {
+    currentUser: async (_: any, __: any, context: { user: any; }) => {
       if (!context.user) throw new Error('Not authenticated');
       return context.user;
     },
-    users: async (_, __, context) => {
+    users: async (_: any, __: any, context: { user: { role: string; }; }) => {
       if (!context.user || context.user.role !== 'Admin') {
         throw new Error('Admin access required');
       }
   
       return await prisma.user.findMany();
     },
-    movements: async (_, { userId }, context) => {
+    movements: async (_: any, { userId }: any, context: { user: { role: string; id: any; }; }) => {
       if (!context.user) {
         throw new Error('Authentication required');
       }
@@ -72,7 +72,7 @@ export const resolvers = {
         include: { user: true }
       });
     },
-    reports: async (_, __, context) => {
+    reports: async (_: any, __: any, context: { user: { role: string; }; }) => {
       if (!context.user || context.user.role !== 'Admin') {
         throw new Error('Admin access required');
       }
@@ -93,7 +93,7 @@ export const resolvers = {
     }
   },
   Movement: {
-    user: async (parent) => {
+    user: async (parent: { userId: any; }) => {
       return await prisma.user.findUnique({
         where: { id: parent.userId }
       });
@@ -102,7 +102,7 @@ export const resolvers = {
   
   
   Mutation: {
-    updateUser: async (_, { id, name, role }, context) => {
+    updateUser: async (_: any, { id, name, role }: any, context: { user: { role: string; }; }) => {
       if (!context.user || context.user.role !== 'Admin') {
         throw new Error('Admin access required');
       }
@@ -112,7 +112,7 @@ export const resolvers = {
         data: { name, role }
       });
     },
-    createMovement: async (_, { concept, amount, date }, context) => {
+    createMovement: async (_: any, { concept, amount, date }: any, context: { user: { id: any; }; }) => {
       if (!context.user) {
         throw new Error('Authentication required');
       }
