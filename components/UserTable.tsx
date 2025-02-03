@@ -13,7 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, Loader } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -28,6 +28,15 @@ import LoadingSpinner from "./LoadingSpinner";
 import { useState } from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { Alert, AlertDescription } from "./ui/alert";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
+import { Label } from "./ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 type User = {
   id: string;
@@ -252,20 +261,28 @@ export function UserTable() {
           Siguiente
         </Button>
         {showModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white rounded-md shadow-lg p-8 w-1/2">
-              <h2 className="text-xl font-bold mb-4">Editar Usuario</h2>
+          <Dialog open onOpenChange={() => setShowModal(false)}>
+            <DialogContent className="sm:max-w-[425px] bg-gray-900 text-gray-100">
+              <DialogHeader>
+                <DialogTitle>Editar Usuario</DialogTitle>
+              </DialogHeader>
+
+              {error && (
+                <div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded">
+                  {error}
+                </div>
+              )}
+
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
                   handleSave();
                 }}
+                className="space-y-4"
               >
-                <div className="mb-4">
-                  <label className="block text-gray-700 font-medium mb-2">
-                    Usuario
-                  </label>
-                  <input
+                <div className="space-y-2">
+                  <Label>Usuario</Label>
+                  <Input
                     type="text"
                     value={selectedUser.name}
                     onChange={(e) =>
@@ -274,48 +291,59 @@ export function UserTable() {
                         name: e.target.value,
                       })
                     }
-                    className="w-full border border-gray-300 rounded-md px-4 py-2"
+                    className="bg-gray-800 border-gray-700"
                     required
                   />
                 </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700 font-medium mb-2">
-                    Rol
-                  </label>
-                  <select
+
+                <div className="space-y-2">
+                  <Label>Rol</Label>
+                  <Select
                     value={selectedUser.role}
-                    onChange={(e) =>
+                    onValueChange={(value) =>
                       setSelectedUser({
                         ...selectedUser,
-                        role: e.target.value,
+                        role: value,
                       })
                     }
-                    className="w-full border border-gray-300 rounded-md px-4 py-2"
-                    required
                   >
-                    <option value="">Seleccionar rol</option>
-                    <option value="Admin">Admin</option>
-                    <option value="User">User</option>
-                  </select>
+                    <SelectTrigger className="bg-gray-800 border-gray-700">
+                      <SelectValue placeholder="Seleccionar rol" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-800 border-gray-700 font-bold text-white">
+                      <SelectItem value="Admin">Admin</SelectItem>
+                      <SelectItem value="User">User</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
-                <div className="flex justify-end">
-                  <button
+
+                <div className="flex justify-end space-x-2 pt-4">
+                  <Button
                     type="button"
-                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md mr-2 hover:bg-gray-400"
+                    variant="outline"
                     onClick={() => setShowModal(false)}
+                    className="border-gray-900 bg-gray-400 hover:bg-gray-200 text-white"
                   >
                     Cancelar
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     type="submit"
-                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                    disabled={updateLoading}
+                    className="bg-sky-700 hover:bg-sky-400"
                   >
-                    Guardar
-                  </button>
+                    {updateLoading ? (
+                      <>
+                        <Loader className="mr-2 h-4 w-4 animate-spin" />
+                        Guardando
+                      </>
+                    ) : (
+                      "Guardar"
+                    )}
+                  </Button>
                 </div>
               </form>
-            </div>
-          </div>
+            </DialogContent>
+          </Dialog>
         )}
       </div>
     </div>

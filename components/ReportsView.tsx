@@ -222,15 +222,6 @@ const ReportsView = () => {
             <CardContent>
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <p className="text-sm text-gray-400 mb-1">Balance Total</p>
-                  <div className="text-xl font-bold">
-                    {new Intl.NumberFormat("es-MX", {
-                      style: "currency",
-                      currency: "MXN",
-                    }).format(totalBalance)}
-                  </div>
-                </div>
-                <div>
                   <p className="text-sm text-gray-400 mb-1">Total Ingresos</p>
                   <div className="text-xl font-bold text-green-500">
                     {new Intl.NumberFormat("es-MX", {
@@ -247,6 +238,15 @@ const ReportsView = () => {
                       style: "currency",
                       currency: "MXN",
                     }).format(totals.expenses)}
+                  </div>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-400 mb-1">Balance Total</p>
+                  <div className="text-xl font-bold">
+                    {new Intl.NumberFormat("es-MX", {
+                      style: "currency",
+                      currency: "MXN",
+                    }).format(totalBalance)}
                   </div>
                 </div>
               </div>
