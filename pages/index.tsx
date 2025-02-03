@@ -1,41 +1,116 @@
-import { toast } from "@/hooks/use-toast";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import Link from "next/link";
+import { ArrowRight, DollarSign, Users, BarChart3 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 export default function MainPage() {
-  const { user } = useUser();
+  const { user, isLoading } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user && !isLoading) {
+      router.push("/movements");
+    }
+  }, [user, isLoading, router]);
+
+  // Si está cargando o el usuario está autenticado, no mostrar nada
+  if (isLoading || user) {
+    return null;
+  }
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <h1 className="text-4xl font-bold mb-8">Bienvenido a la Aplicación</h1>
-      <p className="text-lg mb-4 text-center">
-        Explora las funcionalidades de nuestra plataforma. Para acceder a la
-        gestión de usuarios, reportes, y más, por favor inicia sesión.
-      </p>
-      {user ? (
-        <div className="flex flex-col items-center justify-center h-screen">
-          <h1 className="text-2xl font-bold mb-4">Welcome, {user.name}!</h1>
-          <Link
-            href="/movements"
-            className="px-4 py-2 bg-blue-500 text-white rounded-md"
-          >
-            Go to Dashboard
-          </Link>
-          <Link
-            href="/api/auth/logout"
-            className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md"
-          >
-            Logout
-          </Link>
+    <div className="min-h-screen relative overflow-hidden bg-gray-900">
+      {/* Fondo animado */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-pizarra-950/20 via-pizarra-600/20 to-pizarra-100/20" />
+        <div className="absolute inset-0 animate-pulse bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-indigo-900/30 via-purple-900/30 to-pink-900/30" />
+      </div>
+
+      {/* Contenido principal */}
+      <div className="relative h-screen flex flex-col items-center justify-center px-4">
+        <div className="max-w-4xl text-center space-y-8">
+          <h1 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-200 to-pizarra-400 animate-gradient">
+            Sistema de Gestión Financiera
+          </h1>
+
+          {!user ? (
+            <>
+              <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+                Una plataforma integral para la gestión de ingresos y egresos,
+                administración de usuarios y generación de reportes detallados.
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+                <div className="p-6 bg-gray-800/50 rounded-xl backdrop-blur-sm border border-gray-700">
+                  <DollarSign className="w-12 h-12 text-indigo-400 mb-4" />
+                  <h3 className="text-xl font-semibold text-white mb-2">
+                    Control Financiero
+                  </h3>
+                  <p className="text-gray-400">
+                    Gestiona tus ingresos y egresos.
+                  </p>
+                </div>
+
+                <div className="p-6 bg-gray-800/50 rounded-xl backdrop-blur-sm border border-gray-700">
+                  <Users className="w-12 h-12 text-indigo-400 mb-4" />
+                  <h3 className="text-xl font-semibold text-white mb-2">
+                    Gestión de Usuarios
+                  </h3>
+                  <p className="text-gray-400">
+                    Administra roles y permisos de usuarios.
+                  </p>
+                </div>
+
+                <div className="p-6 bg-gray-800/50 rounded-xl backdrop-blur-sm border border-gray-700">
+                  <BarChart3 className="w-12 h-12 text-indigo-400 mb-4" />
+                  <h3 className="text-xl font-semibold text-white mb-2">
+                    Reportes
+                  </h3>
+                  <p className="text-gray-400">
+                    Visualiza y analiza datos con reportes personalizados.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-12">
+                <Link href="/api/auth/login">
+                  <Button className="bg-gray-600 hover:bg-indigo-700 text-white px-8 py-6 text-lg rounded-xl transition-all transform hover:scale-105">
+                    Comenzar ahora
+                    <ArrowRight className="ml-2" />
+                  </Button>
+                </Link>
+              </div>
+            </>
+          ) : (
+            <div className="space-y-6 backdrop-blur-sm bg-gray-800/50 p-8 rounded-2xl border border-gray-700">
+              <h2 className="text-3xl font-bold text-white">
+                ¡Bienvenido de nuevo, {user.name}!
+              </h2>
+              <p className="text-gray-300">
+                Continúa gestionando tus movimientos financieros y reportes.
+              </p>
+              <div className="flex gap-4">
+                <Link href="/movements">
+                  <Button className="bg-indigo-600 hover:bg-indigo-700">
+                    Ir al Dashboard
+                    <ArrowRight className="ml-2" />
+                  </Button>
+                </Link>
+                <Link href="/api/auth/logout">
+                  <Button
+                    variant="outline"
+                    className="border-gray-600 text-gray-300 hover:bg-gray-700"
+                  >
+                    Cerrar Sesión
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
-      ) : (
-        <Link
-          href="/api/auth/login"
-          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-        >
-          Iniciar Sesión
-        </Link>
-      )}
+      </div>
     </div>
   );
 }

@@ -219,24 +219,28 @@ export function MovementsTable({ data, role, onAddMovement }) {
             }).format(totalBalance)}
           </span>
         </div>
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Anterior
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Siguiente
-          </Button>
-        </div>
+        {
+          <div className="space-x-2 text-white">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+              className="border-gray-600 text-gray-900 hover:bg-gray-800 hover:text-gray-100 disabled:opacity-50 disabled:text-gray-500"
+            >
+              Anterior
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+              className="border-gray-600 text-gray-900 hover:bg-gray-800 hover:text-gray-100 disabled:opacity-50 disabled:text-gray-500"
+            >
+              Siguiente
+            </Button>
+          </div>
+        }
       </div>
     </div>
   );

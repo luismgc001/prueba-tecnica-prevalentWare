@@ -32,6 +32,8 @@ export default function MovementsList({ role }) {
 
   const { data, loading, error } = useQuery(GET_MOVEMENTS, {
     variables: { userId: userData?.currentUser?.id },
+    pollInterval: 1000, // Refresca cada segundo
+    fetchPolicy: "network-only",
   });
 
   if (loading) return <LoadingSpinner />;

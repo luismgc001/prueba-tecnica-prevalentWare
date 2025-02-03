@@ -2,6 +2,23 @@ import { useState } from "react";
 import { useMutation, gql } from "@apollo/client";
 import { useToast } from "@/hooks/use-toast";
 import { GET_MOVEMENTS } from "./MovementsList";
+import { Loader2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 
 const CREATE_MOVEMENT = gql`
   mutation CreateMovement($concept: String!, $amount: Float!, $date: String!) {
@@ -24,17 +41,27 @@ export default function AddMovement({ onClose }) {
   const [amount, setAmount] = useState("");
   const [date, setDate] = useState("");
   const [error, setError] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
   const [createMovement] = useMutation(CREATE_MOVEMENT, {
     refetchQueries: [{ query: GET_MOVEMENTS }],
     awaitRefetchQueries: true,
+    onCompleted: () => {
+      toast({
+        title: "¡Éxito!",
+        description: "Movimiento creado correctamente",
+        variant: "default",
+        className: "success",
+      });
+      onClose();
+    },
     onError: (error) => {
       toast({
         title: "Error",
         description: error.message,
         className: "error",
         duration: 3000,
-        position: "top-center",
+        variant: "destructive",
       });
     },
   });
@@ -68,6 +95,7 @@ export default function AddMovement({ onClose }) {
   };
 
   const handleSave = async () => {
+    setIsSaving(true);
     try {
       if (!concept || !amount || !date) {
         setError("Todos los campos son obligatorios");
@@ -109,6 +137,7 @@ export default function AddMovement({ onClose }) {
       setDate("");
       setError("");
       onClose();
+      setIsSaving(false);
     } catch (error) {
       toast({
         title: "Error",
@@ -120,80 +149,90 @@ export default function AddMovement({ onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white rounded-md shadow-lg p-8 w-1/2">
-        <h2 className="text-xl font-bold mb-4">Nuevo Movimiento</h2>
+    <Dialog open onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[425px] bg-gray-900 text-gray-100">
+        <DialogHeader>
+          <DialogTitle>Nuevo Movimiento</DialogTitle>
+        </DialogHeader>
+
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          <div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded">
             {error}
           </div>
         )}
+
         <form
           onSubmit={(e) => {
             e.preventDefault();
             handleSave();
           }}
+          className="space-y-4"
         >
-          <div className="mb-4">
-            <label className="block text-gray-700 font-medium mb-2">
-              Tipo de Movimiento
-            </label>
-            <select
-              value={concept}
-              onChange={(e) => setConcept(e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-4 py-2"
-              required
-            >
-              <option value="Ingreso">Ingreso</option>
-              <option value="Egreso">Egreso</option>
-            </select>
+          <div className="space-y-2">
+            <Label>Tipo de Movimiento</Label>
+            <Select value={concept} onValueChange={setConcept}>
+              <SelectTrigger className="bg-gray-800 border-gray-700">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-gray-800 border-gray-700 font-bold text-white">
+                <SelectItem value="Ingreso">Ingreso</SelectItem>
+                <SelectItem value="Egreso">Egreso</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 font-medium mb-2">
-              Monto
-            </label>
-            <input
+
+          <div className="space-y-2">
+            <Label>Monto</Label>
+            <Input
               type="number"
               value={amount}
               onChange={handleAmountChange}
-              className="w-full border border-gray-300 rounded-md px-4 py-2"
               min="1"
-              step="1" // Cambiado a 1 para solo permitir enteros
+              step="1"
               required
               placeholder="0"
+              className="bg-gray-800 border-gray-700"
             />
           </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 font-medium mb-2">
-              Fecha
-            </label>
-            <input
+
+          <div className="space-y-2">
+            <Label>Fecha</Label>
+            <Input
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-4 py-2"
               max={new Date().toISOString().split("T")[0]}
               required
+              className="bg-gray-800 border-gray-700"
             />
           </div>
-          <div className="flex justify-end">
-            <button
+
+          <div className="flex justify-end space-x-2 pt-4">
+            <Button
               type="button"
-              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md mr-2 hover:bg-gray-400"
+              variant="outline"
               onClick={onClose}
+              className="border-gray-900 bg-gray-400 hover:bg-gray-200 text-white"
             >
               Cancelar
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-              disabled={!!error}
+              disabled={!!error || isSaving}
+              className="bg-sky-700 hover:bg-sky-400 "
             >
-              Guardar
-            </button>
+              {isSaving ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Guardando
+                </>
+              ) : (
+                "Guardar"
+              )}
+            </Button>
           </div>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

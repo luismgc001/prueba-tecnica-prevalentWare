@@ -238,6 +238,7 @@ export function UserTable() {
           size="sm"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
+          className="border-gray-600 text-gray-900 hover:bg-gray-800 hover:text-gray-100 disabled:opacity-50 disabled:text-gray-500"
         >
           Anterior
         </Button>
@@ -246,6 +247,7 @@ export function UserTable() {
           size="sm"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
+          className="border-gray-600 text-gray-900 hover:bg-gray-800 hover:text-gray-100 disabled:opacity-50 disabled:text-gray-500"
         >
           Siguiente
         </Button>
