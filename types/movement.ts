@@ -16,3 +16,9 @@ export interface Movement {
   export interface MovementsProps {
     role: "Admin" | "User";
    }
+
+   export interface MovementsTableProps {
+    data: Movement[];
+    role: 'Admin' | 'User';
+    onAddMovement: () => void;
+   }

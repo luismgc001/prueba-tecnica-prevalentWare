@@ -37,8 +37,10 @@ const CREATE_MOVEMENT = gql`
 
 export default function AddMovement({
   onClose,
+  userData,
 }: {
   onClose: (ev?: any) => {};
+  userData: any;
 }) {
   const { toast } = useToast();
   const [concept, setConcept] = useState("Ingreso");
@@ -48,7 +50,12 @@ export default function AddMovement({
   const [isSaving, setIsSaving] = useState(false);
 
   const [createMovement] = useMutation(CREATE_MOVEMENT, {
-    refetchQueries: [{ query: GET_MOVEMENTS }],
+    refetchQueries: [
+      {
+        query: GET_MOVEMENTS,
+        variables: { userId: userData?.currentUser?.id },
+      },
+    ],
     awaitRefetchQueries: true,
     onCompleted: () => {
       toast({

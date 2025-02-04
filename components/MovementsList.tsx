@@ -33,7 +33,6 @@ export default function MovementsList({ role }: MovementsListProps) {
 
   const { data, loading, error } = useQuery(GET_MOVEMENTS, {
     variables: { userId: userData?.currentUser?.id },
-    pollInterval: 1000, // Refresca cada segundo
     fetchPolicy: "network-only",
   });
 
@@ -52,7 +51,12 @@ export default function MovementsList({ role }: MovementsListProps) {
         role={role}
         onAddMovement={() => setShowModal(true)}
       />
-      {showModal && <AddMovement onClose={async () => setShowModal(false)} />}
+      {showModal && (
+        <AddMovement
+          userData={userData}
+          onClose={async () => setShowModal(false)}
+        />
+      )}
     </>
   );
 }

@@ -24,7 +24,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Movement } from "@/types/movement";
-import { MovementsTableProps } from "@/types/components";
+import { MovementsTableProps } from "@/types/movement";
 
 const columns: ColumnDef<Movement>[] = [
   {
@@ -128,7 +128,10 @@ export function MovementsTable({
     },
   });
 
-  const totalBalance = data.reduce((sum, mov) => sum + mov.amount, 0);
+  const totalBalance = data.reduce(
+    (sum: any, mov: { amount: any }) => sum + mov.amount,
+    0
+  );
 
   return (
     <div className="w-full">
