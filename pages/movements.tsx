@@ -17,7 +17,12 @@ export default function Movements({ role }: MovementsProps) {
   return (
     <Layout role={role}>
       <h2 className="text-2xl font-bold mb-4">Gestión de Movimientos</h2>
-      {showModal && <AddMovement onClose={async () => setShowModal(false)} />}
+      {showModal && (
+        <AddMovement
+          onClose={async () => setShowModal(false)}
+          userData={undefined}
+        />
+      )}
       <MovementsList role={role} />
 
       <Toaster />

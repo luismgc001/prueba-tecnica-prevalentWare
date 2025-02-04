@@ -158,6 +158,8 @@ export default function AddMovement({
       });
     }
   };
+  const today = new Date();
+  today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
 
   return (
     <Dialog open onOpenChange={onClose}>
@@ -212,7 +214,7 @@ export default function AddMovement({
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              max={new Date().toISOString().split("T")[0]}
+              max={today.toISOString().split("T")[0]}
               required
               className="bg-gray-800 border-gray-700"
             />

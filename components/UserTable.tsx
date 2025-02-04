@@ -192,7 +192,7 @@ export function UserTable() {
         />
       </div>
       <div className="rounded-md border">
-        <Table>
+        <Table className="text-base">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>

@@ -4,11 +4,11 @@ import { ArrowRight, DollarSign, Users, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { User } from "@/types/user";
 
-export default function MainPage() {
+export default function Home() {
   const { user, isLoading } = useUser();
   const router = useRouter();
+  const usuario = user?.name;
 
   useEffect(() => {
     if (user && !isLoading) {
@@ -87,7 +87,7 @@ export default function MainPage() {
           ) : (
             <div className="space-y-6 backdrop-blur-sm bg-gray-800/50 p-8 rounded-2xl border border-gray-700">
               <h2 className="text-3xl font-bold text-white">
-                ¡Bienvenido de nuevo, {user.name}!
+                ¡Bienvenido de nuevo, {usuario}!
               </h2>
               <p className="text-gray-300">
                 Continúa gestionando tus movimientos financieros y reportes.

@@ -56,6 +56,7 @@ const columns: ColumnDef<Movement>[] = [
     },
     cell: ({ row }) => {
       const amount = row.getValue("amount") as number;
+
       const formatted = new Intl.NumberFormat("es-MX", {
         style: "currency",
         currency: "MXN",
@@ -90,10 +91,15 @@ const columns: ColumnDef<Movement>[] = [
     cell: ({ row }) => {
       const timestamp = Number(row.getValue("date"));
       const date = new Date(timestamp);
-      const formatted = new Intl.DateTimeFormat("es-MX", {
+
+      // Ajustar manualmente para compensar la diferencia de zona horaria UTC-5
+      date.setHours(date.getHours() + 5);
+
+      const formatted = new Intl.DateTimeFormat("es-CO", {
         day: "numeric",
         month: "long",
         year: "numeric",
+        timeZone: "America/Bogota",
       }).format(date);
       return <div>{formatted}</div>;
     },
@@ -147,12 +153,12 @@ export function MovementsTable({
       </div>
       <div className="flex items-center py-4"></div>
       <div className="rounded-md border">
-        <Table>
+        <Table className="text-base">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id} className="text-lg font-medium">
                     {header.isPlaceholder
                       ? null
                       : flexRender(
