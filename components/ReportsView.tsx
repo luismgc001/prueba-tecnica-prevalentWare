@@ -81,9 +81,7 @@ const ReportsView = () => {
   }
 
   const movements = data?.movements || [];
-  console.log("MOVEMENTS", movements);
   const totalBalance = movements.reduce((acc, mov) => acc + mov.amount, 0);
-  console.log("TOTALB", totalBalance);
 
   const processData = (movements: Movement[]): ChartDataPoint[] => {
     const groupedData: AccumulatorType = movements.reduce(
@@ -124,7 +122,6 @@ const ReportsView = () => {
   };
 
   const chartData = processData(movements);
-  console.log("CHARTDATA", chartData);
 
   const downloadCSV = (): void => {
     const headers = ["Fecha", "Concepto", "Monto", "Usuario"];

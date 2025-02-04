@@ -77,7 +77,6 @@ export function UserTable() {
   const [updateUser, { loading: updateLoading }] = useMutation(UPDATE_USER, {
     refetchQueries: [{ query: GET_USERS }],
   });
-  console.log("DATA USERTABLE: ", data);
   const columns: ColumnDef<User>[] = [
     {
       accessorKey: "name",
