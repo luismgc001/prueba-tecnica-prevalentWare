@@ -1,34 +1,44 @@
-import { PrismaClient } from '@prisma/client';
 import { getSession } from '@auth0/nextjs-auth0';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import { Role } from '@/lib/enums';
 import { prisma } from '@/lib/prisma';
 
-export const createContext = async (req, res) => {
+type User = {
+  id: string;
+  role: Role;
+}
+
+type Context = {
+  user: User;
+}
+
+export const createContext = async (
+  req: NextApiRequest,
+  res: NextApiResponse
+): Promise<Context> => {
   // Obtener la sesión desde Auth0
   const session = await getSession(req, res);
 
-  if (!session) {
+  if (!session || !session.user?.email) {
     throw new Error('No authenticated session');
   }
 
-  const email = session.name.email;
+  const email = session.user.email;
+  
   // Obtener el usuario desde la base de datos
   const user = await prisma.user.findUnique({
     where: { email },
-    select: { id: true, role: true }, // Seleccionamos solo id y role
-  });
+    select: { id: true, role: true },
+  }) as User | null;
 
   if (!user) {
     throw new Error('User not found in the database');
   }
 
   // Validar el rol
-  if (![Role.Admin, Role.User].includes(user.role)) {
+  if (user.role !== Role.Admin && user.role !== Role.User) {
     throw new Error('Invalid role');
   }
 
-
-
-  return { user }; // Contexto con la información del usuario
-
+  return { user };
 };

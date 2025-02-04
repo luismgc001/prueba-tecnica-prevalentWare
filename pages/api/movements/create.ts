@@ -1,8 +1,22 @@
-import { PrismaClient } from '@prisma/client';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from '@auth0/nextjs-auth0';
 import { prisma } from '@/lib/prisma';
+import { Movement } from '@prisma/client';
 
-export default async function handler(req, res) {
+interface CreateMovementBody {
+  concept: string;
+  amount: string | number;
+  date: string;
+}
+
+type ApiResponse<T> = {
+  error?: string;
+} & Partial<T>;
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<ApiResponse<Movement>>
+) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
@@ -13,14 +27,18 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Not authenticated' });
   }
 
-  const { concept, amount, date } = req.body;
+  const { concept, amount, date } = req.body as CreateMovementBody;
 
   if (!concept || !amount || !date) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
   try {
-    const email = session.user.name;
+    const email = session.user?.email;
+
+    if (!email) {
+      return res.status(400).json({ error: 'User email not found in session' });
+    }
 
     // Buscar usuario en la base de datos
     const user = await prisma.user.findUnique({
@@ -36,7 +54,7 @@ export default async function handler(req, res) {
     const movement = await prisma.movement.create({
       data: {
         concept,
-        amount: parseFloat(amount),
+        amount: parseFloat(amount.toString()),
         date: new Date(date),
         userId: user.id,
       },
