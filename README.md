@@ -1,40 +1,125 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Prueba Tecnica Prevalentware
 
-## Getting Started
+## Requisitos Previos
 
-First, run the development server:
+- Node.js 18.x o superior
+- npm o yarn
+- Git
 
+## Instalación Local
+
+1. Clonar el repositorio
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/luismgc001/prueba-tecnica-prevalentWare
+cd prueba-tecnica-prevalentWare
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Instalar dependencias
+```bash
+npm install
+# o
+yarn install
+```
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+3. Configurar variables de entorno
+- Crea un archivo `.env` en la raíz del proyecto
+- Copia el contenido del archivo `.env` proporcionado por correo
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+4. Configurar la base de datos
+```bash
+# Generar el cliente de Prisma
+npx prisma generate
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+5. Iniciar el servidor de desarrollo
+```bash
+npm run dev
+# o
+yarn dev
+```
 
-## Learn More
+La aplicación estará disponible en `http://localhost:3000`
 
-To learn more about Next.js, take a look at the following resources:
+Enlace de aplicación desplegada en Vercel: `https://prueba-tecnica-prevalent-ware-two.vercel.app/`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Ejecutar Tests
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Este proyecto utiliza Jest para testing. Para ejecutar los tests:
 
-## Deploy on Vercel
+```bash
+# Ejecutar todos los tests
+npm test
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Despliegue en Vercel
+
+1. Crea una cuenta en [Vercel](https://vercel.com) si aún no tienes una
+
+2. Instala Vercel CLI (opcional)
+```bash
+npm i -g vercel
+```
+
+3. Conecta tu repositorio con Vercel
+   - Ve a [Vercel](https://vercel.com)
+   - Click en "New Project"
+   - Importa tu repositorio de GitHub
+   - Configura el proyecto:
+     - Framework Preset: Next.js
+     - Build Command: `prisma generate && next build`
+     - Output Directory: `.next`
+
+4. Configura las variables de entorno
+   - En el dashboard de Vercel, ve a Settings > Environment Variables
+   - Agrega todas las variables de entorno del archivo `.env`
+   - Asegúrate de actualizar las URLs y endpoints para producción
+
+5. Despliega
+```bash
+# Si usas Vercel CLI
+vercel
+
+# O simplemente haz push a tu rama main/master
+git push origin main
+```
+## Despliegue en Vercel usando la interfaz grafica.
+
+### 1. Preparación
+- Asegúrate de que tu proyecto esté en un repositorio de GitHub
+- Crea una cuenta en [Vercel](https://vercel.com) si aún no tienes una
+- Asegúrate de tener tu archivo `.env` a mano
+
+### 2. Importar Proyecto
+1. Ve a [Vercel](https://vercel.com)
+2. Haz clic en "Add New..."
+3. Selecciona "Project"
+4. En la sección "Import Git Repository":
+   - Si es la primera vez, haz clic en "Import GitHub Account"
+   - Autoriza a Vercel para acceder a tus repositorios
+5. Busca y selecciona tu repositorio en la lista
+
+### 3. Configurar Proyecto
+En la pantalla de configuración:
+
+1. **Configure Project**
+   - Framework Preset: Selecciona `Next.js`
+   - Root Directory: `./` (si tu proyecto está en la raíz)
+   - Build and Output Settings:
+     - Build Command: `prisma generate && next build`
+     - Output Directory: `.next`
+     - Install Command: `npm install`
+
+2. **Environment Variables**
+   - Copia todas las variables de tu archivo `.env` reemplazando [localhost](http://localhost:3000/) por la url proporcionada por vercel.
+
+3. **Deploy**
+   - Haz clic en "Deploy"
+   - Espera a que el despliegue se complete
+
+
+
+## Credenciales de Prueba
+
+Para probar la aplicación, se proporcinaron credenciales de algunos usuarios por correo.
